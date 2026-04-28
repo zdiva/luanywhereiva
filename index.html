@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Iframe</title>
+</head>
+<body>
+  <h1>El Iframe magnifico</h1>
+  <p>email address below</p>
+
+  <!-- Email Input -->
+  <input type="email" id="email" placeholder="Enter your email" required>
+  <button onclick="generateIframe()">Generate el URLo</button>
+
+  <!-- Display Generated URL -->
+  <p id="url-display" style="margin-top: 20px;"></p>
+
+  <!-- Iframe Container -->
+  <iframe id="iframe-container" width="100%" height="700" style="border: 1px solid #ccc;"></iframe>
+
+  <script>
+    // Function to generate the URL dynamically
+    function generateIframe() {
+      const email = document.getElementById('email').value;
+      if (!email) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      const key = "aa35cd1509c70a2c2b17603a3f"; // Replace with your actual key
+      const timestamp = Math.floor(Date.now() / 1000); // Get current UNIX timestamp
+
+      // Create the string to hash
+      const stringToHash = `USER=${email}&TS=${timestamp}&KEY=${key}`;
+
+      // Generate the SHA-256 hash token
+      const hashBuffer = new TextEncoder().encode(stringToHash);
+      crypto.subtle.digest('SHA-256', hashBuffer).then((hash) => {
+        const token = Array.from(new Uint8Array(hash))
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('');
+
+        // Construct the final URL
+        const url = `https://ivazdunic.learnupon.com/sqsso?Email=${email}&TS=${timestamp}&SSOToken=${token}&redirect_uri=/catalog`;
+        document.getElementById('url-display').innerText = `Generated URL: ${url}`;
+        document.getElementById('iframe-container').src = url;
+      });
+    }
+  </script>
+  <iframe src="https://ivazdunic.learnupon.com/embed/courses/4626681" allow="camera; microphone" width="100%" height="700" frameborder="0"></iframe>
+</body>
+</html>
